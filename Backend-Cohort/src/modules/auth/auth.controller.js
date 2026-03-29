@@ -1,5 +1,6 @@
+import ApiError from "../../common/utils/api-error.js"
 import ApiResponse from "../../common/utils/api-response.js"
-import { getMe, logoutService, loginService, refreshService, registerService } from "./auth.service.js"
+import { getMe, logoutService, loginService, refreshService, registerService, verifyEmail } from "./auth.service.js"
 
 export const register = async (req, res) => {
     const user = await registerService(req.body)
@@ -11,6 +12,12 @@ export const login = async (req, res) => {
     const loginData = await loginService(req.body);
     ApiResponse.created(res, "Login Success", loginData)
 
+}
+export const verifyMail = async (req, res) => {
+    const { token } = req.query
+    if (!token) throw ApiError.badRequest("Token Not found")
+    const user = await verifyEmail(token)
+    ApiResponse.ok(res, "Email Verified Successfully", user)
 }
 export const refresh = async (req, res) => {
     const refreshToken = await refreshService(req.token)

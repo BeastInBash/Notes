@@ -3,7 +3,7 @@ import jwt from 'jsonwebtoken'
 
 export const generateResetToken = () => {
     const rawToken = crypto.randomBytes(32).toString("hex")
-    const hashedToken = crypto.createHash("sha-256").update(rawToken).digest("hex")
+    const hashedToken = crypto.createHash("sha256").update(rawToken).digest("hex")
     return { rawToken, hashedToken }
 }
 export const generatePasswordHash = async (password) => {
@@ -12,8 +12,8 @@ export const generatePasswordHash = async (password) => {
 }
 
 // Generate hash
-export const generateHash = async (password) => {
-    const hashedData = crypto.createHash("sha-256").update(password).digest("hex")
+export const generateHash = async (value) => {
+    const hashedData = crypto.createHash("sha256").update(value).digest("hex")
     return hashedData
 }
 

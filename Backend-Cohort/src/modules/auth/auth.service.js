@@ -1,4 +1,6 @@
 // import { sendVerificationEmail } from '../../common/config/mail.js'
+import { sendVerificationEmail } from '../../common/config/mail.js'
+import { verificationEmailTemplate } from '../../common/templates/emailVerificationTemplate.js'
 import ApiError from '../../common/utils/api-error.js'
 import { generateHash, generateRefreshToken, generateResetToken, generateToken, verifyRefreshToken } from '../../common/utils/jwt.uitls.js'
 import User from './auth.model.js'
@@ -6,7 +8,8 @@ const registerService = async ({ name, email, password }) => {
     const existing = await User.findOne({ email })
     if (existing) throw ApiError.conflict("Email Already Exist")
     const { rawToken, hashedToken } = generateResetToken()
-    console.log("Raw Token", rawToken)
+    const verificationUrl = `${process.env.FRONTEND_URL}/verify-email?token=${hashedToken}`
+    await sendVerificationEmail(email, "Verify Your Email", verificationEmailTemplate(verificationUrl))
     const user = await User.create({
         name,
         email,
@@ -14,7 +17,6 @@ const registerService = async ({ name, email, password }) => {
         verificationToken: hashedToken
     })
     const userObj = user.toObject();
-    // console.log(userObj)
     return userObj;
 }
 
@@ -90,9 +92,12 @@ const logoutService = async (userId) => {
 
 
 const verifyEmail = async (token) => {
-    const hashedToken = generateHash(token)
-    const user = User.findOne({ verificationToken: hashedToken }).select("+verificationToken")
-    // Not found api-error
+    console.log("TOken", token)
+    // const hashedToken = await generateHash(token)
+
+    const user = await User.findOne({ verificationToken: token }).select("+verificationToken")
+    console.log("user ", user)
+    if (!user) throw ApiError.userNotFound("Invalid or expired token")
     user.isVerified = true;
     user.verificationToken = undefined;
     await user.save();
