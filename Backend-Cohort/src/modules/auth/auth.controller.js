@@ -17,7 +17,9 @@ export const verifyMail = async (req, res) => {
     const { token } = req.query
     if (!token) throw ApiError.badRequest("Token Not found")
     const user = await verifyEmail(token)
+
     ApiResponse.ok(res, "Email Verified Successfully", user)
+
 }
 export const refresh = async (req, res) => {
     const refreshToken = await refreshService(req.token)

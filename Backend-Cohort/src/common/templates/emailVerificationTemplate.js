@@ -1,5 +1,5 @@
 export const verificationEmailTemplate = (verificationUrl) => {
-  return `
+    return `
   <!DOCTYPE html>
   <html>
   <head>
