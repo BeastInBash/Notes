@@ -1,0 +1,15 @@
+
+services:
+  postgresDB:
+    image: postgres:17
+    platform: linux/amd64
+    ports:
+      - '5432:5432'
+    environment:
+      POSTGRES_USER: typescriptCohortDB
+      POSTGRES_PASSWORD:  typescriptCohortDB
+      POSTGRES_DB: backendTypescriptCohortDB
+    volumes: 
+      - 'postgres_data:/var/lib/postgresql/data'
+volumes: 
+  postgres_data:
