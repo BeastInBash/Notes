@@ -1,7 +1,7 @@
 
 services:
   postgresDB:
-    image: postgres:17
+    image: postgres:16
     platform: linux/amd64
     ports:
       - '5432:5432'

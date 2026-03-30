@@ -1,10 +1,16 @@
 import { Request, Response } from "express";
-import { signUpPlayload, signInPlayload } from "./model.js";
+import { signUpPlayload, signInPlayload, otpPayload } from "./model.js";
 import db from "../../db/index.js";
 import { userTable } from "../../db/schema.js";
 import { eq } from "drizzle-orm";
 import { createHmac, randomBytes } from "node:crypto";
 import { createToken } from "./utils/token.js";
+import { generateOtp } from "./utils/helpers.js";
+import redisClient from "../../configs/redis.js";
+import ApiError from "../../utils/ApiError.js";
+import ApiResponse from "../../utils/ApiResponse.js";
+import { sendMail } from "../../utils/mail.js";
+import { verifyEmailTemplate } from "./utils/mailTemplate.js";
 class AuthenticationController {
     public async handleSignup(req: Request, res: Response) {
         console.log("Here")
@@ -29,9 +35,25 @@ class AuthenticationController {
             email,
             password: hash,
             salt
-        }).returning({ id: userTable.id })
+        }).returning({ id: userTable.id, email: userTable.email })
+        // Send mail with otp  
+        const otp = generateOtp()
+        sendMail({ to: email, subject: "Verify Your Email", html: verifyEmailTemplate(otp) })
 
+        await redisClient.set(`OTP:${result?.email}`, otp, { EX: 300 })
         return res.status(201).json({ message: "User has been created", data: { id: result?.id } })
+    }
+    // Verify OTP
+    public async verifyOtp(req: Request, res: Response) {
+        const validatedBody = otpPayload.safeParse(req.body);
+        console.log("Validation Error", validatedBody)
+        if (validatedBody.error) throw ApiError.badRequest("OTP can only be of 6 digit")
+        const { email, otp } = validatedBody.data
+        const savedOtp = await redisClient.get(`OTP:${email}`)
+        if (Number(otp) !== Number(savedOtp)) throw ApiError.forbidden("Invalid or Expired OTP")
+        await db.update(userTable).set({ isVerified: true }).where(eq(userTable.email, email))
+        return ApiResponse.ok(res, "Email Verified Successfully")
+
     }
     public async handleSignIn(req: Request, res: Response) {
         const validatedBody = await signInPlayload.safeParse(req.body)
