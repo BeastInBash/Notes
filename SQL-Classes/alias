@@ -1,0 +1,9 @@
+--
+-- SELECT name, auction_price_crores
+-- FROM ipl_team
+-- ORDER BY auction_price_crores DESC
+-- LIMIT 10 OFFSET 3;
+
+SELECT name, auction_price_crores , (auction_price_crores * 100) AS auction_price_lakhs 
+FROM ipl_team 
+LIMIT 10;
