@@ -101,6 +101,14 @@ LIMIT 10;
 
 --DISTINCT VALUES
 SELECT DISTINCT role from ipl_team
+```
+
+<hr>
+
+## Creating
+
+```sql
+
 
 -- CREATING TABLE
 CREATE TABLE canteen_menu (
@@ -111,6 +119,13 @@ CREATE TABLE canteen_menu (
  is_available BOOLEAN DEFAULT TRUE
 )
 
+```
+<hr>
+
+## INSERTING 
+
+```sql
+
 -- INSERTING VALUE
 INSERT INTO canteen_menu (item_name, category, price)-- This paranthisis ask for name of the column in which you want to add the values
 VALUES
@@ -118,9 +133,31 @@ VALUES
 ('Burger','Snack', 80 ), -- This will take the value in the same order like first item_name and then category and then price 
 ('Pizza','Snack', 180 ),
 ('Cold Coffee','Beverages', 180 );
+```
+
+<hr>
+
+## UPDATE 
+```sql
+
 -- UPDATING VALUE 
 UPDATE canteen_menu
 SET price = 20  -- Jisko Set krna hia 
 WHERE item_name = 'Burger' -- and using where to  deifne whose price will be updated you  can also  use Id to specify 
+
+UPDATE canteen_menu
+SET price = price - 5
+where category = 'Beverages';
 ```
+
+
+
+## DELETE
+```sql
+DELETE FROM canteen_menu
+WHERE item_name = 'Cold Coffee';
+
+```
+
+>  NEVER Use Delete without where, wrna (table khali ho jayega)  
 
