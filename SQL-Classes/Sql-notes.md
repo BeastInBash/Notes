@@ -161,3 +161,46 @@ WHERE item_name = 'Cold Coffee';
 
 >  NEVER Use Delete without where, wrna (table khali ho jayega)  
 
+## Aggregation
+
+```sql
+SELECT COUNT(*) as total_rows FROM ipl_team -- Return the number of rows 
+SELECT SUM(auction_price_crores) as total_auction_pool FROM ipl_team -- Return the sun of auction_price_crores 
+SELECT SUM (runs_scored * wicket_taken) as faltu_Calculation FROM ipl_team -- Multiply the runs_scored and wicket_taken
+
+-- Average
+
+SELECT AVG(auction_price_crores) as average_auction_price FROM ipl_team -- Average milega auction_price_crores ka.
+
+SELECT MIN(auction_price_crores) as min_auction_price FROM ipl_team
+SELECT MAX(auction_price_crores) as max_auction_price FROM ipl_team
+```
+
+## GROUP BY
+```sql
+SELECT team, SUM(auction_price_crores) FROM ipl_team
+GROUP BY team
+-- Aggregation based on group (team)
+
+-- Merg same team and then perform Sum on there auction_price_crores column
+-- Same we can apply MIN, MAX, AVG, COUNT
+
+SELECT team, COUNT(auction_price_crores) FROM ipl_team
+GROUP BY team
+
+
+SELECT team, MIN(auction_price_crores) FROM ipl_team
+GROUP BY team
+
+
+SELECT team, MAX(auction_price_crores) FROM ipl_team
+GROUP BY team
+
+
+SELECT team, AVG(auction_price_crores) FROM ipl_team
+GROUP BY team
+
+SELECT team, SUM(auction_price_crores) as total_auction_price FROM ipl_team
+GROUP BY team
+ORDER BY total_auction_price ASC
+```
