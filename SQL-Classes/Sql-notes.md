@@ -203,4 +203,12 @@ GROUP BY team
 SELECT team, SUM(auction_price_crores) as total_auction_price FROM ipl_team
 GROUP BY team
 ORDER BY total_auction_price ASC
+
+--- Multi Column
+SELECT team, name , SUM(auction_price_crores) as total_auction_price from ipl_team
+GROUP BY team, name,
+ORDER BY total_auction_price DESC
+
 ```
+
+> Using Having Keyword (Study For this its where clause for GROUP BY) 
