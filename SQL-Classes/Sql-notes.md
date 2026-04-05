@@ -151,6 +151,7 @@ where category = 'Beverages';
 ```
 
 
+<hr>
 
 ## DELETE
 ```sql
@@ -160,6 +161,9 @@ WHERE item_name = 'Cold Coffee';
 ```
 
 >  NEVER Use Delete without where, wrna (table khali ho jayega)  
+
+
+<hr>
 
 ## Aggregation
 
@@ -175,6 +179,9 @@ SELECT AVG(auction_price_crores) as average_auction_price FROM ipl_team -- Avera
 SELECT MIN(auction_price_crores) as min_auction_price FROM ipl_team
 SELECT MAX(auction_price_crores) as max_auction_price FROM ipl_team
 ```
+
+
+<hr>
 
 ## GROUP BY
 ```sql
@@ -212,3 +219,64 @@ ORDER BY total_auction_price DESC
 ```
 
 > Using Having Keyword (Study For this its where clause for GROUP BY) 
+
+<hr>
+
+## IN Operator
+- Include the values from a result set
+```sql
+SELECT * FROM ipl_team WHERE team IN ('CSK','MI','RR');
+```
+
+<hr>
+
+## NOT IN Operator
+- `NOT IN` in SQL is used to exclude values from a result set
+```sql
+
+SELECT team, name FROM ipl_team
+WHERE team NOT IN ('MI', 'CSK','KKR')
+```
+
+<hr>
+
+## Between Operator
+The BETWEEN operator in SQL is used to filter values within a range (inclusive).
+
+```sql
+select name, price from products
+where price BETWEEN 20 AND 100
+```
+
+<hr>
+
+## Like Pattern Matching
+Helps you to filter out the result based on some pattern, 
+like here I  wanted the result where the name start with `A` 
+To do so sql uses `%` with the char you want to check,
+You can check 1st letter or second letter or 3rd letter or nth letter of the name 
+`LIKE` is case sensitive
+```sql
+SELECT team, name from ipl_team
+WHERE name LIKE 'A%';
+
+-- Search by Second char 
+SELECT team, name from ipl_team
+WHERE name LIKE '_s%'  -- Return those result where the name will have 2nd letter as s 
+```
+
+## IS NULL
+TO check if the value is null;
+```sql
+SELECT wicket_taken FROM ipl_team 
+WHERE wicket_taken IS NULL
+```
+## IS NOT NULL
+To check if the value is not null;
+
+```sql
+SELECT wicket_taken FROM ipl_team
+WHERE wicket_taken IS NOT NULL
+```
+
+
