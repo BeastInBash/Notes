@@ -9,7 +9,11 @@ CREATE TABLE students (
 
     email VARCHAR(322) UNIQUE NOT NULL,
 
-    phone_number VARCHAR(10) UNIQUE, -- 4000 byte vs 10byte 
+    phone_number VARCHAR(10) UNIQUE, -- INT will save 4 byte vs  VARCHAR save 10byte vs BIGINT -> 8 btye 
+
+    -- INT in Postgress is 4byte integer 4 byte = 32 = 2^32 = 4 Billion
+    -- BigInt 8 Byte = 64bit  = 2^64;
+
     age INT CHECK(age > 12),
     current_status VARCHAR(20) DEFAULT 'active' CHECK(current_status IN ('active', 'graduated','droppedout')), 
     has_joined_masterji BOOLEAN DEFAULT FALSE, 
@@ -296,4 +300,217 @@ GROUP BY column
 HAVING condition;
  ```
 
+ <hr>
  
+# Second Class Start Here 
+
+## JOIN 
+- Types of JOIN in sql 
+1. LEFT JOIN (Left outer Join)
+1. RIGHT JOIN (Right outer Join)
+3. INNER JOIN
+1. FULL OUTER JOIN
+
+```sql
+
+CREATE TABLE students (
+    student_id SERIAL PRIMARY KEY,
+    name VARCHAR(100),
+    email VARCHAR(100),
+    branch VARCHAR(50)
+)
+
+CREATE TABLE internships (
+    internship_id SERIAL PRIMARY,
+    company_name VARCHAR(100),
+    role VARCHAR(50),
+    stipend INT CHECK(stipend > 1000),
+    status VARCHAR(20), -- Selected / Pending / Rejected
+    -- Relation to STUDENT
+    student_id INT REFERENCES students(student_id) ON DELETE CASCADE -- This is Called Forign Key Which connects one table with another  
+-- ON DELETE CASCADE means if student deleted its related internship will also get deleted  
+-- ON DELETE SET NULL means make related table rows to NULL
+-- ON DELETE RESTRICT means You cann't delete the student  
+)
+--******************** DOING INNER JOIN ********************
+SELECT
+students.name, 
+students.branch, 
+internships.company_name,
+internships.role,
+internships.stipend
+FROM students
+INNER JOIN internships ON students.student_id = internships.student_id
+```
+
+
+_output of inner Join_
+
+|     name      |         branch         | company_name |           role           | stipend | 
+|---------------|------------------------|--------------|--------------------------|---------|
+| Amit Sharma   | Computer Science       | Google       | Software Engineer Intern |   50000  |
+| Priya Verma   | Information Technology | Microsoft    | Backend Intern           |   45000  |
+| Rahul Singh   | Mechanical             | Amazon       | Cloud Intern             |   40000  |
+| Sneha Gupta   | Electrical             | Infosys      | System Engineer Intern   |   15000  |
+| Vikram Yadav  | Civil                  | TCS          | Developer Intern         |   12000  |
+| Anjali Mishra | Computer Science       | Wipro        | QA Intern                |   10000  |
+| Rohit Kumar   | Electronics            | Flipkart     | Frontend Intern          |   30000  |
+| Neha Patel    | Information Technology | Zomato       | Data Analyst Intern      |   25000  |
+| Karan Mehta   | Mechanical             | Paytm        | Full Stack Intern        |   28000  |
+| Pooja Singh   | Civil                  | Swiggy       | DevOps Intern            |   27000  |
+
+<hr>
+
+```sql
+
+-- Query
+ SELECT s.*, i.company_name 
+ from students as s
+ INNER JOIN internships AS i ON s.student_id = i.student_id;
+
+-- OUTPUT
+
+ student_id |     name      |           email           |         branch         | company_name
+------------+---------------+---------------------------+------------------------+--------------
+          1 | Amit Sharma   | amit.sharma@example.com   | Computer Science       | Google
+          2 | Priya Verma   | priya.verma@example.com   | Information Technology | Microsoft
+          3 | Rahul Singh   | rahul.singh@example.com   | Mechanical             | Amazon
+          4 | Sneha Gupta   | sneha.gupta@example.com   | Electrical             | Infosys
+          5 | Vikram Yadav  | vikram.yadav@example.com  | Civil                  | TCS
+          6 | Anjali Mishra | anjali.mishra@example.com | Computer Science       | Wipro
+          7 | Rohit Kumar   | rohit.kumar@example.com   | Electronics            | Flipkart
+          8 | Neha Patel    | neha.patel@example.com    | Information Technology | Zomato
+          9 | Karan Mehta   | karan.mehta@example.com   | Mechanical             | Paytm
+         10 | Pooja Singh   | pooja.singh@example.com   | Civil                  | Swiggy
+(10 rows)
+
+```
+
+
+<hr>
+
+## LEFT JOIN
+
+```sql
+-- LEFT JOIN QUERY
+SELECT
+s.name, 
+s.branch,
+i.company_name,
+i.stipend
+FROM internships AS i
+LEFT JOIN students as s ON i.student_id = s.student_id
+
+-- OUTPUT of this query
+-- LEft join give all the data from LEFT SIDE
+
+     name      |         branch         | company_name | stipend
+---------------+------------------------+--------------+---------
+ Amit Sharma   | Computer Science       | Google       |   50000
+ Priya Verma   | Information Technology | Microsoft    |   45000
+ Rahul Singh   | Mechanical             | Amazon       |   40000
+ Sneha Gupta   | Electrical             | Infosys      |   15000
+ Vikram Yadav  | Civil                  | TCS          |   12000
+ Anjali Mishra | Computer Science       | Wipro        |   10000
+ Rohit Kumar   | Electronics            | Flipkart     |   30000
+ Neha Patel    | Information Technology | Zomato       |   25000
+ Karan Mehta   | Mechanical             | Paytm        |   28000
+ Pooja Singh   | Civil                  | Swiggy       |   27000
+```
+
+<hr>
+
+## RIGHT JOIN
+
+```sql
+-- RIGHT JOIN QUERY
+SELECT
+s.name, 
+s.branch,
+i.company_name,
+i.stipend
+FROM students AS s
+RIGHT JOIN internships as i ON s.student_id = i.student_id
+-- OUTPUT OF RIGHT JOIN
+-- RIGHT GIVE ALL THE DATA FROM RIGHT TABLE 
+
+     name      |         branch         | company_name | stipend
+---------------+------------------------+--------------+---------
+ Amit Sharma   | Computer Science       | Google       |   50000
+ Priya Verma   | Information Technology | Microsoft    |   45000
+ Rahul Singh   | Mechanical             | Amazon       |   40000
+ Sneha Gupta   | Electrical             | Infosys      |   15000
+ Vikram Yadav  | Civil                  | TCS          |   12000
+ Anjali Mishra | Computer Science       | Wipro        |   10000
+ Rohit Kumar   | Electronics            | Flipkart     |   30000
+ Neha Patel    | Information Technology | Zomato       |   25000
+ Karan Mehta   | Mechanical             | Paytm        |   28000
+ Pooja Singh   | Civil                  | Swiggy       |   27000
+
+```
+<hr>
+
+## FULL OUTER JOIN
+- Give all the data from both the table
+```sql
+
+SELECT
+s.name as student_name, 
+s.branch,
+i.company_name,
+i.stipend
+FROM students AS s
+FULL OUTER JOIN internships as i ON s.student_id = i.student_id
+
+
+-- OUTPUT
+
+ student_name  |         branch         | company_name | stipend 
+---------------+------------------------+--------------+---------
+ Amit Sharma   | Computer Science       | Google       |   50000
+ Priya Verma   | Information Technology | Microsoft    |   45000
+ Rahul Singh   | Mechanical             | Amazon       |   40000
+ Sneha Gupta   | Electrical             | Infosys      |   15000
+ Vikram Yadav  | Civil                  | TCS          |   12000
+ Anjali Mishra | Computer Science       | Wipro        |   10000
+ Rohit Kumar   | Electronics            | Flipkart     |   30000
+ Neha Patel    | Information Technology | Zomato       |   25000
+ Karan Mehta   | Mechanical             | Paytm        |   28000
+ Pooja Singh   | Civil                  | Swiggy       |   27000
+ Pooja Singh   | Civil                  |              |        
+ Amit Sharma   | Computer Science       |              |        
+ Rohit Kumar   | Electronics            |              |        
+ Priya Verma   | Information Technology |              |        
+ Neha Patel    | Information Technology |              |        
+ Vikram Yadav  | Civil                  |              |        
+ Rahul Singh   | Mechanical             |              |        
+ Karan Mehta   | Mechanical             |              |        
+ Anjali Mishra | Computer Science       |              |        
+ Sneha Gupta   | Electrical             |              |        
+```
+
+
+# INDEXES
+- Tells DB that that data you want is exist in which corner of the Database.  
+- Just like index of a book or dictionary 
+
+```sql
+
+EXPLAIN ANALYSE SELECT * FROM students where name ='Amit Sharma'
+-- EXPLAIN ANALYSE Give you db inside that how much time a query took to execute
+```
+
+
+## Creating INDEX
+```sql
+CREATE INDEX idx_name ON marks (name);
+-- Create index named idx_name ON marks table name column
+-- Draw back Lock the table does not allow you to read or write the table until the indexing is finished
+
+
+-- Creating index without locking the table  
+CREATE INDEX CONCURRENTLY idx_name ON marks (name);
+```
+
+![INDEX.png](./images/index.png)
+
