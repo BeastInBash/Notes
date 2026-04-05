@@ -510,7 +510,58 @@ CREATE INDEX idx_name ON marks (name);
 
 -- Creating index without locking the table  
 CREATE INDEX CONCURRENTLY idx_name ON marks (name);
+
+CREATE INDEX idx_name on makrs(name) INCLUDE (marks);
+-- Included marks column into the index storage (for non-key value index)
+-- To drop the idx_name index 
+
+DROP INDEX idx_name
 ```
 
+<hr>
+
 ![INDEX.png](./images/index.png)
+<hr>
+
+
+# Transactions 
+- Queries run in group if any of the query failed the whole transction is failed, means none of the query will
+  complete.
+- You use it when you have to run queries such that one query run and only after first one is successfull then only
+  the second one should run then we use `transction` 
+
+
+<hr>
+
+__TABLE__
+
+![Table](./images/txntable.png)
+<hr>
+
+__How to write transactions__
+
+```sql
+BEGIN; -- Transactions Starts from here
+UPDATE accounts SET balance = balance - 500 
+WHERE owner = 'Saif';
+UPDATE accounts SET balance = balance + 500 
+WHERE owner = "Shikhar"
+-- Still Transactions is not over  so db won't be updated
+COMMIT;
+-- Now transction is over and DB will be updated
+```
+
+
+Transactions is bepicted via `*#` on the sql shell.
+
+![TXN2](./images/txn2.png)
+
+<hr>
+
+![TNX1](./images/txn1.png)
+
+<hr>
+
+> Mnnn Kre to dekh lena ye topic `Non-Repeatable Read, Phantom Read`
+
 
