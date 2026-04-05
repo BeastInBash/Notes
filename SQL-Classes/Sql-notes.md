@@ -168,16 +168,16 @@ WHERE item_name = 'Cold Coffee';
 ## Aggregation
 
 ```sql
-SELECT COUNT(*) as total_rows FROM ipl_team -- Return the number of rows 
-SELECT SUM(auction_price_crores) as total_auction_pool FROM ipl_team -- Return the sun of auction_price_crores 
+SELECT COUNT(*) as total_rows FROM ipl_team; -- Return the number of rows 
+SELECT SUM(auction_price_crores) as total_auction_pool FROM ipl_team; -- Return the sun of auction_price_crores 
 SELECT SUM (runs_scored * wicket_taken) as faltu_Calculation FROM ipl_team -- Multiply the runs_scored and wicket_taken
 
 -- Average
 
-SELECT AVG(auction_price_crores) as average_auction_price FROM ipl_team -- Average milega auction_price_crores ka.
+SELECT AVG(auction_price_crores) as average_auction_price FROM ipl_team; -- Average milega auction_price_crores ka.
 
-SELECT MIN(auction_price_crores) as min_auction_price FROM ipl_team
-SELECT MAX(auction_price_crores) as max_auction_price FROM ipl_team
+SELECT MIN(auction_price_crores) as min_auction_price FROM ipl_team;
+SELECT MAX(auction_price_crores) as max_auction_price FROM ipl_team;
 ```
 
 
@@ -265,18 +265,35 @@ SELECT team, name from ipl_team
 WHERE name LIKE '_s%'  -- Return those result where the name will have 2nd letter as s 
 ```
 
+<hr>
+
 ## IS NULL
 TO check if the value is null;
 ```sql
 SELECT wicket_taken FROM ipl_team 
 WHERE wicket_taken IS NULL
 ```
+
+<hr>
+
 ## IS NOT NULL
 To check if the value is not null;
-
 ```sql
 SELECT wicket_taken FROM ipl_team
 WHERE wicket_taken IS NOT NULL
 ```
+<hr>
 
+## HAVING 
+`HAVING` is used to filter grouped result (after`GROUP BY`) 
+ - `Where` -> Filters rows before grouping
+ - `HAVING` -> Filter groups after Aggregation
+ ```sql
 
+SELECT column, AGG_FUNCTION(column)
+FROM table
+GROUP BY column
+HAVING condition;
+ ```
+
+ 
